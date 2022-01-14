@@ -44,26 +44,7 @@ const users = {
     ]
 }
 
-// app.get('/users', (req, res) => 
-// {
-//     res.send(users);
-// });
 
-app.get('/users', (req, res) => {
-    const name = req.query.name;
-    if (name != undefined){
-        let result = findUserByName(name);
-        result = {users_list: result};
-        res.send(result);
-    }
-    else{
-        res.send(users);
-    }
-});
-
-const findUserByName = (name) => { 
-    return users['users_list'].filter( (user) => user['name'] === name); 
-}
 
 app.get('/users/:id', (req, res) => {
     const id = req.params['id']; //or req.params.id
@@ -82,11 +63,17 @@ function findUserById(id) {
 }
 
 
+
 app.get('/users', (req, res) => {
-    const name = req.params.name;
-    const job = req.params.job;
-    if (name != undefined){
+    const name = req.query.name;
+    const job = req.query.job;
+    if (name != undefined && job != undefined){
         let result = findUsersByNameJob(name,job);
+        result = {users_list: result};
+        res.send(result);
+    } else if (name != undefined && job == undefined)
+    {
+        let result = findUserByName(name);
         result = {users_list: result};
         res.send(result);
     }
@@ -95,10 +82,15 @@ app.get('/users', (req, res) => {
     }
 });
 
-function findUsersByNameJob(name,job) {
-    return users['users_list'].filter( (user) => user['name'] === name && user['job'] === job); // or line below
-    //return users['users_list'].filter( (user) => user['id'] === id);
+const findUserByName = (name) => { 
+    return users['users_list'].filter( (user) => user['name'] === name); 
 }
+
+function findUsersByNameJob(name,job) {
+    return users['users_list'].filter( (user) => user['name'] === name && user['job'] === job);
+}
+
+
 
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
