@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemnon backend.js",
     "start": "node backend.js"
-    },
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {

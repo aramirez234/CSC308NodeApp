@@ -80,3 +80,43 @@ function findUserById(id) {
     return users['users_list'].find( (user) => user['id'] === id); // or line below
     //return users['users_list'].filter( (user) => user['id'] === id);
 }
+
+
+app.get('/users', (req, res) => {
+    const name = req.params.name;
+    const job = req.params.job;
+    if (name != undefined){
+        let result = findUsersByNameJob(name,job);
+        result = {users_list: result};
+        res.send(result);
+    }
+    else{
+        res.send(users);
+    }
+});
+
+function findUsersByNameJob(name,job) {
+    return users['users_list'].filter( (user) => user['name'] === name && user['job'] === job); // or line below
+    //return users['users_list'].filter( (user) => user['id'] === id);
+}
+
+app.post('/users', (req, res) => {
+    const userToAdd = req.body;
+    addUser(userToAdd);
+    res.status(200).end();
+});
+
+function addUser(user){
+    users['users_list'].push(user);
+}
+
+app.delete('/users', (req, res) => {
+    const userToDelete = req.body;
+    deleteUser(userToDelete);
+    res.status(200).end();
+});
+
+function deleteUser(user){
+    users['users_list'].splice(user,1);
+}
+
