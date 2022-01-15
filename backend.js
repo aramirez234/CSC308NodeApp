@@ -1,8 +1,9 @@
-const cors = require('cors');
+
 const express = require('express');
 const app = express();
 const port = 5000;
 
+const cors = require('cors');
 app.use(cors());
 app.use(express.json());
 
@@ -47,6 +48,10 @@ const users = {
 }
 
 
+app.get('/users', (req, res) => {
+    res.send(users);
+});
+
 
 app.get('/users/:id', (req, res) => {
     const id = req.params['id']; //or req.params.id
@@ -63,7 +68,6 @@ function findUserById(id) {
     return users['users_list'].find( (user) => user['id'] === id); // or line below
     //return users['users_list'].filter( (user) => user['id'] === id);
 }
-
 
 
 app.get('/users', (req, res) => {
@@ -92,26 +96,39 @@ function findUsersByNameJob(name,job) {
     return users['users_list'].filter( (user) => user['name'] === name && user['job'] === job);
 }
 
-
-
 app.post('/users', (req, res) => {
+    if(req.body.id == undefined)
+    {req.body.id = IdGenerator();}
     const userToAdd = req.body;
     addUser(userToAdd);
-    res.status(200).end();
+    res.send(userToAdd);
+    res.status(201).end();
 });
 
 function addUser(user){
     users['users_list'].push(user);
 }
 
-app.delete('/users', (req, res) => {
+app.delete('/users/:id', (req, res) => {
     const userToDelete = req.body;
-    deleteUser(userToDelete);
-    res.status(200).end();
+    if (userToDelete === undefined || userToDelete.length == 0)
+        res.status(404).send('Resource not found.');
+    else {
+        deleteUser(userToDelete);
+        res.status(204).end();
+    } 
 });
 
 function deleteUser(user){
     users['users_list'].splice(user,1);
 }
 
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+  }
 
+function IdGenerator()
+{
+    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    return characters.charAt(getRandomInt(62)) + characters.charAt(getRandomInt(62)) + characters.charAt(getRandomInt(62)) + characters.charAt(getRandomInt(62)) + characters.charAt(getRandomInt(62));
+}
