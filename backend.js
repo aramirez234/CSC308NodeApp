@@ -97,12 +97,11 @@ function findUsersByNameJob(name,job) {
 }
 
 app.post('/users', (req, res) => {
-    if(req.body.id == undefined)
+    if(req.body.id === undefined)
     {req.body.id = IdGenerator();}
     const userToAdd = req.body;
     addUser(userToAdd);
-    res.send(userToAdd);
-    res.status(201).end();
+    res.status(201).send(userToAdd);
 });
 
 function addUser(user){
