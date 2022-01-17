@@ -109,7 +109,7 @@ function addUser(user){
 }
 
 app.delete('/users/:id', (req, res) => {
-    const userToDelete = req.body;
+    const userToDelete = req.params['id'];
     if (userToDelete === undefined || userToDelete.length == 0)
         res.status(404).send('Resource not found.');
     else {
@@ -118,8 +118,8 @@ app.delete('/users/:id', (req, res) => {
     } 
 });
 
-function deleteUser(user){
-    users['users_list'].splice(user,1);
+function deleteUser(userToDelete){
+    users['users_list'] = users['users_list'].filter((user) => user['id'] !== userToDelete);
 }
 
 function getRandomInt(max) {
@@ -129,5 +129,10 @@ function getRandomInt(max) {
 function IdGenerator()
 {
     let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    return characters.charAt(getRandomInt(62)) + characters.charAt(getRandomInt(62)) + characters.charAt(getRandomInt(62)) + characters.charAt(getRandomInt(62)) + characters.charAt(getRandomInt(62));
+    let id = "";
+    for(let i = 0; i < 6; i++)
+    {
+        id += characters.charAt(getRandomInt(62));
+    }
+    return id;
 }
